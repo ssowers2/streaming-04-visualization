@@ -69,8 +69,13 @@ The consumer processed six messages and wrote the results to:
 
 The consumer also generated two visualization files:
 
-- `sales_chart_sowers.png`
-- `high_value_sales_sowers.png`
+### Sales Chart
+
+![Sales chart](images/sales_chart_sowers.png)
+
+### High Value Sales Chart
+
+![High value sales chart](images/high_value_sales_sowers.png)
 
 My custom High Value Sale Alert feature logs a warning whenever a sale
 total is greater than or equal to $50.00.
