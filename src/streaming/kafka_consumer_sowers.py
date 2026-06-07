@@ -24,6 +24,7 @@ from datafun_streaming.kafka.kafka_settings import KafkaSettings
 from datafun_streaming.stats.stats_utils import RunningStats
 from datafun_toolkit.logger import get_logger, log_header, log_path
 from dotenv import load_dotenv
+import matplotlib.pyplot as plt
 
 from streaming.core.utils import log_env_vars
 from streaming.data_engineering.derived_fields import enrich_message
@@ -64,6 +65,9 @@ OUTPUT_DIR: Final[Path] = DATA_DIR / "output"
 
 OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sowers.csv"
 OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sowers.png"
+OUTPUT_ALERT_CHART: Final[Path] = (  # Apply new skills to new problem
+    OUTPUT_DIR / "high_value_sales_sowers.png"
+)
 
 REGIONS_CSV: Final[Path] = DATA_DIR / "regions.csv"
 PRODUCTS_CSV: Final[Path] = DATA_DIR / "products.csv"
@@ -86,6 +90,9 @@ def log_paths() -> None:
     log_path(LOG, "DATA_DIR", DATA_DIR)
     log_path(LOG, "OUTPUT_CSV", OUTPUT_CSV)
     log_path(LOG, "OUTPUT_CHART", OUTPUT_CHART)
+    log_path(
+        LOG, "OUTPUT_ALERT_CHART", OUTPUT_ALERT_CHART
+    )  # Apply skills to new problem
     log_path(LOG, "REGIONS_CSV", REGIONS_CSV)
     log_path(LOG, "PRODUCTS_CSV", PRODUCTS_CSV)
     log_path(LOG, "CURRENCIES_CSV", CURRENCIES_CSV)
@@ -275,7 +282,7 @@ def process_message(
     LOG.info(f"tax={enriched['tax_amount']}")
     LOG.info(f"total={enriched['total']}")
 
-    if enriched["total"] >= HIGH_VALUE_SALE_THRESHOLD:  # Tehnical Modification
+    if enriched["total"] >= HIGH_VALUE_SALE_THRESHOLD:  # Technical Modification
         LOG.warning("HIGH VALUE SALE ALERT")
         LOG.warning(f"order={enriched['order_id']}")
         LOG.warning(f"total=${enriched['total']:,.2f}")
@@ -393,21 +400,49 @@ def consume_messages(
     return consumed_count, skipped_count
 
 
-def save_artifacts(figure: Any) -> None:
-    """Save output artifacts or note their location.
+# Apply skills to new problem, new chart
+def save_high_value_alert_chart(
+    x_values: list[int],
+    y_values: list[float],
+) -> None:
+    """Save a chart showing sales totals and the alert threshold."""
+    LOG.info("Saving high-value sales alert chart...")
 
-    NEW: Updated to include saving the live chart.
+    figure, axis = plt.subplots()
 
-    Arguments:
-        figure: Matplotlib figure to save as an image.
-    """
+    axis.plot(x_values, y_values, marker="o", label="Sale Total")
+    axis.axhline(
+        y=HIGH_VALUE_SALE_THRESHOLD,
+        linestyle="--",
+        label="High Value Threshold",
+    )
+
+    axis.set_title("High Value Sale Alert Monitoring")
+    axis.set_xlabel("Message")
+    axis.set_ylabel("Sale Total ($)")
+    axis.legend()
+    axis.grid(True)
+
+    figure.tight_layout()
+    figure.savefig(OUTPUT_ALERT_CHART)
+    plt.close(figure)
+
+    log_path(LOG, "WROTE OUTPUT_ALERT_CHART", OUTPUT_ALERT_CHART)
+
+
+def save_artifacts(
+    figure: Any,
+    x_values: list[int],
+    y_values: list[float],
+) -> None:
+    """Save output artifacts or note their location."""
     LOG.info("Saving artifacts...")
 
-    # NEW: Save the live chart as an image file.
     save_live_chart(figure=figure, chart_path=OUTPUT_CHART)
+    save_high_value_alert_chart(x_values, y_values)
 
-    # UPDATED: Log paths to the saved artifacts.
     log_path(LOG, "WROTE OUTPUT_CHART", OUTPUT_CHART)
+    log_path(LOG, "WROTE OUTPUT_ALERT_CHART", OUTPUT_ALERT_CHART)
     log_path(LOG, "WROTE OUTPUT_CSV", OUTPUT_CSV)
 
 
@@ -431,6 +466,9 @@ def log_summary(
     LOG.info(f"Skipped  {skipped_count} message(s).")
     log_path(LOG, "OUTPUT_CSV", OUTPUT_CSV)
     log_path(LOG, "OUTPUT_CHART", OUTPUT_CHART)
+    log_path(
+        LOG, "OUTPUT_ALERT_CHART", OUTPUT_ALERT_CHART
+    )  # Apply skills to new problem
 
     if stats.count > 0:
         LOG.info(f"  Total sales:  ${stats.total:,.2f}")
@@ -498,7 +536,11 @@ def main() -> None:
 
         # NEW: When we call save_artifacts(),
         # pass in the chart for saving as well.
-        save_artifacts(figure)
+        save_artifacts(
+            figure,
+            x_values,
+            y_values,
+        )
 
     finally:
         # NEW: Call the function to close the live chart after saving artifacts.

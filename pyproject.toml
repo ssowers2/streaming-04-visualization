@@ -42,6 +42,11 @@ docs = [
     "zensical", # WHY: Generate and maintain project documentation.
 ]
 
+[project.urls]
+Homepage = "https://github.com/ssowers2/streaming-04-visualization"
+Repository = "https://github.com/ssowers2/streaming-04-visualization"
+Documentation = "https://ssowers2.github.io/streaming-04-visualization/"
+
 # ============================================================
 # SECTION 2: TOOL CONFIGURATION (Professional basics)
 # ============================================================
