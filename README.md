@@ -364,7 +364,7 @@ Look for the word `chart`:
 | C04 | ========================
 ```
 
-![Example Chart after 3 messages](./docs/images/chart_after_3_messages.png)
+![Sales Chart](data/output/sales_chart_sowers.png)
 
 ## Phase 4: Custom Modification & Engagement
 
