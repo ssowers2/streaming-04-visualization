@@ -364,8 +364,6 @@ Look for the word `chart`:
 | C04 | ========================
 ```
 
-![Sales Chart](data/output/sales_chart_sowers.png)
-
 ## Phase 4: Custom Modification & Engagement
 
 ### Project Overview
@@ -431,6 +429,8 @@ generated the following custom output files:
 
 - `data/output/consumed_sales_sowers.csv`
 - `data/output/sales_chart_sowers.png`
+
+![Sales Chart](data/output/sales_chart_sowers.png)
 
 My High Value Sale Alert feature worked as expected. The consumer
 generated warning messages whenever a sales total was greater than or
