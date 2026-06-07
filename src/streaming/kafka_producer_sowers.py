@@ -1,4 +1,4 @@
-"""src/streaming/kafke_producer_case.py - Kafka producer example."""
+"""Custom Kafka producer for the Sowers streaming visualization project."""
 
 # src/streaming/kafka_producer_sowers.py
 
@@ -65,10 +65,10 @@ ROOT_DIR: Final[Path] = Path.cwd()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 OUTPUT_DIR: Final[Path] = DATA_DIR / "output"
 
-SALES_CSV: Final[Path] = DATA_DIR / "sales.csv"
+SALES_CSV: Final[Path] = DATA_DIR / "sales_sowers.csv"
 REGIONS_CSV: Final[Path] = DATA_DIR / "regions.csv"
 PRODUCTS_CSV: Final[Path] = DATA_DIR / "products.csv"
-REJECTED_SALES_CSV: Final[Path] = OUTPUT_DIR / "producer_rejected_sales.csv"
+REJECTED_SALES_CSV: Final[Path] = OUTPUT_DIR / "producer_rejected_sales_sowers.csv"
 
 
 # ==========================================================

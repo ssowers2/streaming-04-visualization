@@ -54,14 +54,16 @@ COURSE_NAME: Final[str] = "Streaming Data"
 TIMEOUT_SECONDS: Final[float] = float(os.getenv("CONSUMER_TIMEOUT_SECONDS", "10.0"))
 MAX_MESSAGES: Final[int] = int(os.getenv("CONSUMER_MAX_MESSAGES", "1000"))
 
+HIGH_VALUE_SALE_THRESHOLD: Final[float] = 50.00  # Technical Modification
+
 # === DECLARE CONSTANT PATHS ===
 
 ROOT_DIR: Final[Path] = Path.cwd()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 OUTPUT_DIR: Final[Path] = DATA_DIR / "output"
 
-OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales.csv"
-OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_case.png"
+OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sowers.csv"
+OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sowers.png"
 
 REGIONS_CSV: Final[Path] = DATA_DIR / "regions.csv"
 PRODUCTS_CSV: Final[Path] = DATA_DIR / "products.csv"
@@ -272,6 +274,12 @@ def process_message(
     LOG.info(f"subtotal={enriched['subtotal']}")
     LOG.info(f"tax={enriched['tax_amount']}")
     LOG.info(f"total={enriched['total']}")
+
+    if enriched["total"] >= HIGH_VALUE_SALE_THRESHOLD:  # Tehnical Modification
+        LOG.warning("HIGH VALUE SALE ALERT")
+        LOG.warning(f"order={enriched['order_id']}")
+        LOG.warning(f"total=${enriched['total']:,.2f}")
+
     LOG.info(f"running_total={stats.total + enriched['total']:.2f}")
 
     # Update running statistics with the new total.

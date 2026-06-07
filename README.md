@@ -365,3 +365,86 @@ Look for the word `chart`:
 ```
 
 ![Example Chart after 3 messages](./docs/images/chart_after_3_messages.png)
+
+## Phase 4: Custom Modification & Engagement
+
+### Project Overview
+
+For this phase, I created custom versions of the Kafka producer and
+consumer files by copying the provided case files and renaming them
+with my last name (`_sowers`).
+
+### Technical Modifications
+
+#### 1. Customized Input and Output Files
+
+I modified the project to use custom Sowers-specific files instead of
+the default case files.
+
+#### Producer Changes
+
+- Changed the input dataset from `sales.csv` to `sales_sowers.csv`
+- Changed the rejected-record output file to
+  `producer_rejected_sales_sowers.csv`
+
+#### Consumer Changes
+
+- Changed the consumed sales output file to
+  `consumed_sales_sowers.csv`
+- Changed the visualization output file to
+  `sales_chart_sowers.png`
+
+These changes ensured that my project generated custom output files
+associated with my modified version of the application.
+
+#### 2. Added High-Value Sale Monitoring
+
+To improve observability and add another analytics feature, I
+implemented a **High Value Sale Alert**.
+
+A new threshold variable was added:
+
+```python
+HIGH_VALUE_SALE_THRESHOLD = 50.00
+```
+
+When a sale total is greater than or equal to this threshold, the
+consumer generates a warning message that includes:
+
+- Order ID
+- Sale Total
+
+This allows important sales transactions to be identified as they are
+processed in the Kafka stream.
+
+### Results and Observations
+
+After running the customized Kafka producer and consumer, the
+application successfully processed six sales transactions from the
+`sales_sowers.csv` dataset. The producer sent all six messages and did
+not reject any records.
+
+The consumer successfully received and processed all six messages. As
+each message arrived, the application calculated sales totals, updated
+running statistics, and refreshed the live chart. The consumer
+generated the following custom output files:
+
+- `data/output/consumed_sales_sowers.csv`
+- `data/output/sales_chart_sowers.png`
+
+My High Value Sale Alert feature worked as expected. The consumer
+generated warning messages whenever a sales total was greater than or
+equal to $50.00. Five of the six transactions triggered alerts.
+
+The final analytics summary reported:
+
+- Messages Consumed: 6
+- Messages Skipped: 0
+- Total Sales: $471.87
+- Average Sale: $78.64
+- Minimum Sale: $43.19
+- Maximum Sale: $194.82
+
+The project ran successfully with all modifications in place. The
+custom file names, output files, live visualization, and high-value
+sale alerts all worked correctly during testing.
